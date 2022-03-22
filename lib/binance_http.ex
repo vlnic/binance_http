@@ -1,18 +1,15 @@
 defmodule BinanceHttp do
+  @config BinanceHttp.Config
+
   @moduledoc """
   Documentation for `BinanceHttp`.
   """
 
-  @doc """
-  Hello world.
+  def endpoint() do
+    @config.get(:base_url)
+  end
 
-  ## Examples
-
-      iex> BinanceHttp.hello()
-      :world
-
-  """
-  def hello do
-    :world
+  def config() do
+    Application.get_env(:binance_http, :config_module, BinanceHttp.Config)
   end
 end
