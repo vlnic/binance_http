@@ -13,8 +13,8 @@ defmodule BinanceHttp.SAPI.V1 do
 
   defp request(path) do
     with {:ok, url} <- Http.build_url(@base_path, path),
-         {:ok, content} <- Http.get(url, "", ["Accept": "application/json"]),
-         {:ok, response} <- Jason.decode(content)
+         {:ok, json} <- Http.get(url, %{}, ["Accept": "application/json"]),
+         {:ok, response} <- Jason.decode(json)
     do
       response
     else

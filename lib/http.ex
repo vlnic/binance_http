@@ -3,7 +3,7 @@ defmodule BinanceHttp.Http do
   @config Application.compile_env(:binance_http, :config, BinanceHttp.Config)
 
   def build_url(prefix, path) do
-    {:ok, @config.get(:base_url) <> "/" <> prefix <> path}
+    {:ok, base_url() <> "/" <> prefix <> path}
   end
 
   def json(url, json, headers) do
@@ -59,6 +59,11 @@ defmodule BinanceHttp.Http do
     {:ok, result}
   end
   defp prepare_query_params(url, _) do
-    url
+    {:ok, url}
+  end
+
+  defp base_url do
+    @config.get(:base_url)
+    |> String.replace_suffix("/", "")
   end
 end
