@@ -14,9 +14,9 @@ defmodule BinanceHttp.Digest do
 
   defp glue_params(%{timestamp: _} = params) when is_map(params) do
     params
-    |> Map.to_list(params)
+    |> Map.to_list()
     |> Enum.reduce("", fn({k, v}, result) ->
-      result <> "&k=v"
+      result <> "&#{k}=#{v}"
     end)
   end
 end
