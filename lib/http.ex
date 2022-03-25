@@ -1,4 +1,6 @@
 defmodule BinanceHttp.Http do
+  alias BinanceHttp.Query
+
   @behaviour BinanceHttp.Behaviours.Http
   @config Application.compile_env(:binance_http, :config, BinanceHttp.Config)
 
@@ -6,8 +8,8 @@ defmodule BinanceHttp.Http do
     {:ok, base_url() <> "/" <> prefix <> path}
   end
 
-  def json(url, json, headers) do
-    with {:ok, body} <- Jason.encode(json),
+  def json(url, params, headers) do
+    with {:ok, body} <- Jason.encode(params),
          {:ok, body, _} <- request(:post, url, body, headers ++ ["Content-Type": "application/json"], [])
     do
       Jason.decode!(body)
@@ -43,6 +45,14 @@ defmodule BinanceHttp.Http do
         {:error, :unexpected_error, reason: reason}
     end
   end
+
+  def maybe_prepare_query(url, query: query_params) do
+    Query.prepare_query_params(url, query_params)
+  end
+  def maybe_prepare_query(url, query: query_params, sign: true) do
+    Query.prepare_query_with_sign(url, query_params)
+  end
+  def maybe_prepare_query(url, _), do: url
 
   defp prepare_query_params(url, params) when is_map(params) do
     result =

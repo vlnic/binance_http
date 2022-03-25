@@ -10,7 +10,8 @@ defmodule BinanceHttp.Auth do
     headers ++ ["X-MBX-APIKEY": auth_params().api_key]
   end
 
-  def put_signed_query(url, %Auth{} = auth, query_params) do
+  def put_signed_query(url, query_params) do
+    auth = auth_params()
     digest = Digest.digest(auth.secret_key, %{query_params | timestamp: timestamp()})
 
     if Regex.match?(~r/\?/, url) do
