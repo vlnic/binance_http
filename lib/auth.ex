@@ -12,7 +12,12 @@ defmodule BinanceHttp.Auth do
 
   def put_signed_query(url, %Auth{} = auth, query_params) do
     digest = Digest.digest(auth.secret_key, %{query_params | timestamp: timestamp()})
-    url <> "&timestamp=#{digest.timestamp}&#{digest.signature}"
+
+    if Regex.match?(~r/\?/, url) do
+      url <> "&timestamp=#{digest.timestamp}&signature=#{digest.signature}"
+    else
+      url <> "?timestamp=#{digest.timestamp}&signature=#{digest.signature}"
+    end
   end
 
   defp auth_params do
