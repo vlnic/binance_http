@@ -1,9 +1,9 @@
 defmodule BinanceHttp.Auth do
   alias BinanceHttp.Config
   alias BinanceHttp.Digest
-  alias BinanceHttp.Auth
 
   @config Config
+  @default_recv_window 10000
 
   defstruct [:api_key, :secret_key]
 
@@ -13,7 +13,10 @@ defmodule BinanceHttp.Auth do
 
   def put_signed_query(url, query_params) do
     auth = auth_params()
-    digest = Digest.digest(auth.secret_key, %{query_params | timestamp: timestamp()})
+    digest = Digest.digest(
+      auth.secret_key,
+      Map.merge(query_params, %{timestamp: timestamp(), recvWindow: @default_recv_window})
+    )
 
     if Regex.match?(~r/\?/, url) do
       url <> "&timestamp=#{digest.timestamp}&signature=#{digest.signature}"
@@ -23,7 +26,7 @@ defmodule BinanceHttp.Auth do
   end
 
   defp auth_params do
-    %Auth{
+    %__MODULE__{
       api_key: @config.get(:api_key),
       secret_key: @config.get(:secret_key)
     }

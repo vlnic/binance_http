@@ -9,11 +9,11 @@ defmodule BinanceHttp.Digest do
   defp digest(secret_key, params, timestamp) when is_binary(params) do
     signature =
       :sha256
-    |> :crypto.hmac(params, secret_key)
-    |> Base.encode16()
-    |> String.downcase()
+      |> :crypto.hmac(params, secret_key)
+      |> Base.encode16()
+      |> String.downcase()
 
-    %BinanceHttp.Digest{signature: signature, timestamp: timestamp}
+    %__MODULE__{signature: signature, timestamp: timestamp}
   end
   defp digest(_, _, _), do: {:error, :incorrect_params}
 

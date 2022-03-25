@@ -1,6 +1,4 @@
 defmodule BinanceHttp.Http do
-  import BinanceHttp.Http.Request, only: [put_change: 3, new: 1]
-
   alias BinanceHttp.Auth
   alias BinanceHttp.Http.Query
   alias BinanceHttp.Http.Request
@@ -26,8 +24,8 @@ defmodule BinanceHttp.Http do
     end
   end
 
-  def get(url, query_params, headers) do
-    case request(:get, url, %{}, headers, [query: query_params]) do
+  def get(url, query_params, headers, opts \\ []) do
+    case request(:get, url, %{}, headers, opts ++ [query: query_params]) do
       {:ok, response, _} ->
         response
 
@@ -37,13 +35,13 @@ defmodule BinanceHttp.Http do
   end
 
   def request(method, url, body, headers, opts) do
-    new(%{
+    Request.new(%{
       method: method, url: url, body: body,
       headers: headers, options: opts
     })
     |> maybe_prepare_query()
     |> maybe_put_secure_headers()
-    |> maybe_prepare_body()
+    |> prepare_body()
     |> do_request()
   end
 
@@ -62,23 +60,26 @@ defmodule BinanceHttp.Http do
 
   defp maybe_prepare_query(%Request{url: url, options: [query: query_params, sign: true]} = request) do
     url = Query.prepare_query_with_sign(url, query_params)
-    put_change(request, :url, url)
+    Request.put_change(request, :url, url)
   end
   defp maybe_prepare_query(%Request{url: url, options: [query: query_params]} = request) do
     url = Query.prepare_query_params(url, query_params)
-    put_change(request, :url, url)
+    Request.put_change(request, :url, url)
   end
   defp maybe_prepare_query(%Request{} = request), do: request
 
-  defp maybe_prepare_body(%Request{body: content, options: [json: true]} = request) when map_size(content) > 0 do
+  defp prepare_body(%Request{body: content, options: [json: true]} = request) when map_size(content) > 0 do
     body = Jason.encode(content)
-    put_change(request, :body, body)
+    Request.put_change(request, :body, body)
   end
-  defp maybe_prepare_body(%Request{} = request), do: request
+  defp prepare_body(%Request{body: content} = request) when is_binary(content) do
+    request
+  end
+  defp prepare_body(%Request{} = request), do: Request.put_change(request, :body, "")
 
   defp maybe_put_secure_headers(%Request{headers: headers, options: [api_key: true]} = request) do
     headers = Auth.put_auth_header(headers)
-    put_change(request, :headers, headers)
+    Request.put_change(request, :headers, headers)
   end
   defp maybe_put_secure_headers(%Request{} = request), do: request
 
