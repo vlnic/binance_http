@@ -1,7 +1,6 @@
 defmodule BinanceHttp.Auth do
   alias BinanceHttp.Config
   alias BinanceHttp.Digest
-  alias BinanceHttp.Auth
 
   @config Config
 
@@ -23,7 +22,7 @@ defmodule BinanceHttp.Auth do
   end
 
   defp auth_params do
-    %Auth{
+    %__MODULE__{
       api_key: @config.get(:api_key),
       secret_key: @config.get(:secret_key)
     }

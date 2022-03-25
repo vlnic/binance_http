@@ -9,7 +9,7 @@ defmodule BinanceHttp.Http.Request do
     struct(Request, params)
   end
 
-  def put_change(request, key, value) when key in @changed_fields do
+  def put_change(%__MODULE__{} = request, key, value) when key in @changed_fields do
     request
     |> Map.from_struct
     |> Map.merge(%{key: value})
