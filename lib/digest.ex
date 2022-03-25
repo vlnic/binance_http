@@ -13,9 +13,9 @@ defmodule BinanceHttp.Digest do
     |> Base.encode16()
     |> String.downcase()
 
-    %Digest{signature: signature, timestamp: timestamp}
+    %BinanceHttp.Digest{signature: signature, timestamp: timestamp}
   end
-  def digest(_, _, _), do: {:error, :incorrect_params}
+  defp digest(_, _, _), do: {:error, :incorrect_params}
 
   defp glue_params(%{timestamp: _} = params) when is_map(params) do
     params

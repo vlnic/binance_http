@@ -1,6 +1,7 @@
 defmodule BinanceHttp.Auth do
   alias BinanceHttp.Config
   alias BinanceHttp.Digest
+  alias BinanceHttp.Auth
 
   @config Config
 
@@ -23,13 +24,13 @@ defmodule BinanceHttp.Auth do
 
   defp auth_params do
     %Auth{
-      api_key: api_key(),
+      api_key: @config.get(:api_key),
       secret_key: @config.get(:secret_key)
     }
   end
 
   defp timestamp do
-    DateTime.now()
+    DateTime.utc_now()
     |> DateTime.to_unix()
   end
 end

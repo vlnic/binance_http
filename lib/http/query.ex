@@ -1,9 +1,9 @@
-defmodule BinanceHttp.Query do
+defmodule BinanceHttp.Http.Query do
   alias BinanceHttp.Auth
 
   def prepare_query_with_sign(url, params) when is_map(params) do
     url
-    |> prepare_query_params(url, params)
+    |> prepare_query_params(params)
     |> Auth.put_signed_query(params)
   end
 
