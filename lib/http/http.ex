@@ -58,6 +58,10 @@ defmodule BinanceHttp.Http do
     end
   end
 
+  defp maybe_prepare_query(%Request{url: url, options: [query: query_params, sign: true, auth: auth]} = request) do
+    url = Query.prepare_query_with_sign(url, query_params, auth)
+    Request.put_change(request, :url, url)
+  end
   defp maybe_prepare_query(%Request{url: url, options: [query: query_params, sign: true]} = request) do
     url = Query.prepare_query_with_sign(url, query_params)
     Request.put_change(request, :url, url)

@@ -11,8 +11,20 @@ defmodule BinanceHttp.Auth do
     headers ++ ["X-MBX-APIKEY": auth_params().api_key]
   end
 
-  def put_signed_query(url, query_params) do
-    auth = auth_params()
+  def put_auth_header(headers, %{api_key: key} = _auth) do
+    headers ++ ["X-MBX-APIKEY": key]
+  end
+
+  def build_signed_url(url, query_params, auth) do
+    build_url(url, query_params, auth)
+  end
+
+  def build_signed_url(url, query_params, auth) do
+    build_url(url, query_params, auth_params())
+  end
+
+
+  defp build_url(url, query, auth) do
     digest = Digest.digest(
       auth.secret_key,
       Map.merge(query_params, %{timestamp: timestamp(), recvWindow: @default_recv_window})
