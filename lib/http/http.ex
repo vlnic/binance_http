@@ -10,7 +10,7 @@ defmodule BinanceHttp.Http do
     {:ok, base_url() <> "/" <> prefix <> path}
   end
 
-  def json(url, params, headers, opts \\ []) do
+  def post_json(url, params, headers, opts \\ []) do
     with {:ok, body} <- Jason.encode(params),
          {:ok, body, _} <- request(:post, url, body, %{headers | "Content-Type": "application/json"}, opts)
     do
@@ -42,6 +42,7 @@ defmodule BinanceHttp.Http do
     |> maybe_prepare_query()
     |> maybe_put_secure_headers()
     |> prepare_body()
+    |> prepare_headers()
     |> do_request()
   end
 
@@ -87,6 +88,12 @@ defmodule BinanceHttp.Http do
     request
   end
   defp prepare_body(%Request{} = request), do: Request.put_change(request, :body, "")
+
+  defp prepare_headers(%Request{headers: headers, options: [json: true]} = request) do
+    headers = headers ++ [{"Content-Type", "application/json"}]
+    Request.put_change(request, :headers, headers)
+  end
+  defp prepare_headers(request), do: request
 
   defp maybe_put_secure_headers(%Request{headers: headers, options: [api_key: true, auth: auth]} = request) when is_map(auth) do
     headers = Auth.put_auth_header(headers, auth)
