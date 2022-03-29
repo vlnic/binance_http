@@ -5,4 +5,5 @@ config :binance_http,
   api_key: System.get_env("API_BNB_KEY"),
   base_url: System.get_env("BINANCE_ENDPOINT", "https://api.binance.com"),
   http_library: HTTPoison,
-  config: BinanceHttp.Config
+  config: BinanceHttp.Config,
+  recv_window: 10000

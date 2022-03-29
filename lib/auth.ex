@@ -3,7 +3,6 @@ defmodule BinanceHttp.Auth do
   alias BinanceHttp.Digest
 
   @config Config
-  @default_recv_window 10000
 
   defstruct [:api_key, :secret_key]
 
@@ -27,7 +26,7 @@ defmodule BinanceHttp.Auth do
   defp build_url(url, query, auth) do
     digest = Digest.digest(
       auth.secret_key,
-      Map.merge(query, %{timestamp: timestamp(), recvWindow: @default_recv_window})
+      Map.merge(query, %{timestamp: timestamp(), recvWindow: recv_window()})
     )
 
     if Regex.match?(~r/\?/, url) do
@@ -42,6 +41,10 @@ defmodule BinanceHttp.Auth do
       api_key: @config.get(:api_key),
       secret_key: @config.get(:secret_key)
     }
+  end
+
+  defp recv_window do
+    @config.get(:recv_window)
   end
 
   defp timestamp do
