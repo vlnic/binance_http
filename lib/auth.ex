@@ -7,6 +7,7 @@ defmodule BinanceHttp.Auth do
 
   defstruct [:api_key, :secret_key]
 
+  # @TODO fix put headers
   def put_auth_header(headers) do
     headers ++ ["X-MBX-APIKEY": auth_params().api_key]
   end
@@ -19,7 +20,7 @@ defmodule BinanceHttp.Auth do
     build_url(url, query_params, auth)
   end
 
-  def build_signed_url(url, query_params, auth) do
+  def build_signed_url(url, query_params) do
     build_url(url, query_params, auth_params())
   end
 
@@ -27,7 +28,7 @@ defmodule BinanceHttp.Auth do
   defp build_url(url, query, auth) do
     digest = Digest.digest(
       auth.secret_key,
-      Map.merge(query_params, %{timestamp: timestamp(), recvWindow: @default_recv_window})
+      Map.merge(query, %{timestamp: timestamp(), recvWindow: @default_recv_window})
     )
 
     if Regex.match?(~r/\?/, url) do

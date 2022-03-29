@@ -45,13 +45,17 @@ defmodule BinanceHttp.Http do
     |> do_request()
   end
 
-  defp do_request(%Request{method: method, url: url, body: body, headers: headers} = _req) do
+  defp do_request(%Request{method: method, url: url, body: body, headers: headers} = req) do
+    IO.inspect(req)
     case HTTPoison.request(method, url, body, headers) do
       {:ok, %HTTPoison.Response{status_code: 200} = response} ->
         {:ok, response.body, response.headers}
 
       {:ok, %HTTPoison.Response{status_code: 404, request_url: req_url} = _response} ->
         {:error, :not_found, request_url: req_url}
+
+      {:ok, %HTTPoison.Response{status_code: 400} = response} ->
+        {:error, :invalid_request, response: response}
 
       {:error, %HTTPoison.Error{reason: reason}} ->
         {:error, :unexpected_error, reason: reason}
@@ -72,15 +76,22 @@ defmodule BinanceHttp.Http do
   end
   defp maybe_prepare_query(%Request{} = request), do: request
 
-  defp prepare_body(%Request{body: content, options: [json: true]} = request) when map_size(content) > 0 do
+  defp prepare_body(%Request{body: content, options: [json: true]} = request) when is_map(content) and map_size(content) > 0 do
     body = Jason.encode(content)
     Request.put_change(request, :body, body)
+  end
+  defp prepare_body(%Request{method: method} = request) when method in [:get, :delete] do
+    Request.put_change(request, :body, "")
   end
   defp prepare_body(%Request{body: content} = request) when is_binary(content) do
     request
   end
   defp prepare_body(%Request{} = request), do: Request.put_change(request, :body, "")
 
+  defp maybe_put_secure_headers(%Request{headers: headers, options: [api_key: true, auth: auth]} = request) when is_map(auth) do
+    headers = Auth.put_auth_header(headers, auth)
+    Request.put_change(request, :headers, headers)
+  end
   defp maybe_put_secure_headers(%Request{headers: headers, options: [api_key: true]} = request) do
     headers = Auth.put_auth_header(headers)
     Request.put_change(request, :headers, headers)

@@ -6,6 +6,9 @@ defmodule BinanceHttp.SAPI.V1 do
   def capital_detail(%{api_key: _api_key, secret_key: _secret_key} = params) do
     request("/capital/config/getall", [sign: true, auth: params])
   end
+  def capital_detail() do
+    request("/capital/config/getall", [sign: true])
+  end
 
   def system_status() do
     request("/system/status")
