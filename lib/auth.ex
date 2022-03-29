@@ -7,13 +7,12 @@ defmodule BinanceHttp.Auth do
 
   defstruct [:api_key, :secret_key]
 
-  # @TODO fix put headers
   def put_auth_header(headers) do
-    headers ++ ["X-MBX-APIKEY": auth_params().api_key]
+    headers ++ [{"X-MBX-APIKEY", auth_params().api_key}]
   end
 
   def put_auth_header(headers, %{api_key: key} = _auth) do
-    headers ++ ["X-MBX-APIKEY": key]
+    headers ++ [{"X-MBX-APIKEY", key}]
   end
 
   def build_signed_url(url, query_params, auth) do
