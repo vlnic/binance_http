@@ -27,7 +27,7 @@ defmodule BinanceHttp.Api do
       end
     end
 
-    ast = quote do
+    quote do
       def unquote(name)(), do: unquote(name)(%{})
       def unquote(name)(params), do: unquote(name)(params, [])
       def unquote(name)(params, opts) do
@@ -43,8 +43,6 @@ defmodule BinanceHttp.Api do
         end
       end
     end
-
-    ast
   end
 
   def execute(method, path, params, opts) do
