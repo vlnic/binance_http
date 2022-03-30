@@ -1,5 +1,6 @@
 defmodule BinanceHttp.Api do
   alias BinanceHttp.Api.Endpoint
+  alias BinanceHttp.Http.Request
 
   defmacro __using__(opts \\ []) do
     namespace = Keyword.get(opts, :namespace, "")
@@ -14,8 +15,8 @@ defmodule BinanceHttp.Api do
   defmacro request(name, opts) do
     {endpoint, opts} = Keyword.pop(opts, :endpoint)
     {params, opts} = Keyword.pop(opts, :params)
-    {query, opts} = Keyword.pop(opts, :query, %{})
-    {params_fn, opts} = Keyword.pop(opts, :params_fn)
+#    {query, opts} = Keyword.pop(opts, :query, %{})
+#    {params_fn, opts} = Keyword.pop(opts, :params_fn)
     {auth_type, opts} = Keyword.pop(opts, :auth_type, :none)
 
     {method, path} = check_endpoint!(endpoint)
@@ -23,7 +24,7 @@ defmodule BinanceHttp.Api do
 
     execute_ast = fn(name, method) ->
       quote do
-        BinanceHttp.Api.execute(unquote(method), path, params_transformed, opts)
+        BinanceHttp.Api.execute(unquote(method), path, params_transformed, opts, auth_type)
       end
     end
 
@@ -32,7 +33,7 @@ defmodule BinanceHttp.Api do
       def unquote(name)(params), do: unquote(name)(params, [])
       def unquote(name)(params, opts) do
         with {:ok, params} <- unquote(params_ast_fun) do
-          path = unquote(Endpoint.build(path, query, {auth_type, params}))
+#          path = unquote(Endpoint.build(path, query, {auth_type, params}))
           opts = Keyword.merge(unquote(opts), opts)
 
           params_transformed = unquote(maybe_params_fn)
@@ -45,10 +46,12 @@ defmodule BinanceHttp.Api do
     end
   end
 
-  def execute(method, path, params, opts) do
-
+  def execute(method, path, params, opts, auth_type) do
+    query = Keyword.pop(opts, :query, %{})
+    url = Endpoint.build(path, query, auth_type)
+    body = Request.build_body(params, opts)
+    BinanceHttp.Http.request(method, url, body)
   end
-
 
   defp check_endpoint!({method, path} = endpoint), do: endpoint
   defp check_endpoint!(invalid), do: raise "method accept {http_method, path, maybe_query_params} provided: #{inspect(invalid)}"

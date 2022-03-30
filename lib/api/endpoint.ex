@@ -2,40 +2,32 @@ defmodule BinanceHttp.Api.Endpoint do
   alias BinanceHttp.Http.Query
   alias BinanceHttp.Digest
 
+  @secret Application.compile_env(:binance_http, :secret_key)
+  @base_url Application.get_env(:binance_http, :base_url)
+
   @sign_auth_types [:trade, :margin, :user_data]
 
-  def build(path, query, {auth, params}) when auth in @sign_auth_types do
-    {signature, params} = Keyword.fetch(params, :signature)
-    url = prepare_query_params(path, query)
+  def build(path, query, auth) when auth in @sign_auth_types do
+    url = @base_url <> path
+          |> prepare_query_params(query)
 
-    digest = Digest.digest(
-      signature,
-      Map.merge(query, %{timestamp: timestamp(), recvWindow: 10000})
+    {signature, timestamp} = Digest.digest(
+      @secret,
+      Map.merge(query, %{recvWindow: 10000})
     )
 
     if Regex.match?(~r/\?/, url) do
-      url <> "&timestamp=#{digest.timestamp}&signature=#{digest.signature}"
+      url <> "&timestamp=#{timestamp}&signature=#{signature}"
     else
-      url <> "?timestamp=#{digest.timestamp}&signature=#{digest.signature}"
+      url <> "?timestamp=#{timestamp}&signature=#{signature}"
     end
   end
 
-  def build(path, query, _) when is_map(query) and map_size(query) > 0 do
+  def build(path, query, _) do
     prepare_query_params(path, query)
   end
 
-  def prepare_query_with_sign(url, params, auth) when is_map(params) do
-    url
-    |> prepare_query_params(params)
-    |> Auth.build_signed_url(params, auth)
-  end
-  def prepare_query_with_sign(url, params) when is_map(params) do
-    url
-    |> prepare_query_params(params)
-    |> add_sign(params)
-  end
-
-  def prepare_query_params(url, params) when is_map(params) do
+  def prepare_query_params(url, params) when is_map(params) and map_size(params) > 0 do
     params
     |> Map.to_list()
     |> Enum.reduce(url, fn ({k, v}, url) ->
@@ -46,10 +38,6 @@ defmodule BinanceHttp.Api.Endpoint do
       end
     end)
   end
-  def prepare_query_params(url, _), do: url
 
-  defp timestamp do
-    DateTime.utc_now()
-    |> DateTime.to_unix()
-  end
+  def prepare_query_params(url, _), do: url
 end

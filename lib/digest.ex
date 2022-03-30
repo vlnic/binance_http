@@ -1,21 +1,19 @@
 defmodule BinanceHttp.Digest do
   defstruct [:signature, :timestamp]
 
-  def digest(secret_key, %{timestamp: time} = params) when is_map(params) do
-    digest(secret_key, glue_params(params), time)
-  end
-  def digest(_, _), do: {:error, :incorrect_params}
+  def digest(secret_key, params) when is_map(params) do
+    time = timestamp()
+    bin_params = glue_params(%{params | timestamp: time})
 
-  defp digest(secret_key, params, timestamp) when is_binary(params) do
     signature =
       :sha256
-      |> :crypto.hmac(params, secret_key)
+      |> :crypto.hmac(bin_params, secret_key)
       |> Base.encode16()
       |> String.downcase()
 
-    %__MODULE__{signature: signature, timestamp: timestamp}
+    {signature, time}
   end
-  defp digest(_, _, _), do: {:error, :incorrect_params}
+  def digest(_, _), do: {:error, :incorrect_params}
 
   defp glue_params(%{timestamp: _} = params) when is_map(params) do
     params
@@ -23,5 +21,10 @@ defmodule BinanceHttp.Digest do
     |> Enum.reduce("", fn({k, v}, result) ->
       result <> "&#{k}=#{v}"
     end)
+  end
+
+  defp timestamp do
+    DateTime.utc_now()
+    |> DateTime.to_unix()
   end
 end
