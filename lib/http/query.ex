@@ -1,6 +1,7 @@
 defmodule BinanceHttp.Http.Query do
   alias BinanceHttp.Auth
 
+  # @TODO delete this
   def prepare_query_with_sign(url, params, auth) when is_map(params) do
     url
     |> prepare_query_params(params)
@@ -13,20 +14,15 @@ defmodule BinanceHttp.Http.Query do
   end
 
   def prepare_query_params(url, params) when is_map(params) do
-    result =
-      params
-      |> Map.to_list()
-      |> Enum.reduce(url, fn ({k, v}, url) ->
-        if Regex.match?(~r/\?/, url) do
-          "#{url}&#{k}=#{v}"
-        else
-          "#{url}?#{k}=#{v}"
-        end
-      end)
-
-    {:ok, result}
+    params
+    |> Map.to_list()
+    |> Enum.reduce(url, fn ({k, v}, url) ->
+      if Regex.match?(~r/\?/, url) do
+        "#{url}&#{k}=#{v}"
+      else
+        "#{url}?#{k}=#{v}"
+      end
+    end)
   end
-  def prepare_query_params(url, _) do
-    {:ok, url}
-  end
+  def prepare_query_params(url, _), do: url
 end

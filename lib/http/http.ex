@@ -3,6 +3,7 @@ defmodule BinanceHttp.Http do
   alias BinanceHttp.Http.Query
   alias BinanceHttp.Http.Request
 
+  # @TODO delete this
   @behaviour BinanceHttp.Behaviours.Http
   @config Application.compile_env(:binance_http, :config, BinanceHttp.Config)
 
@@ -46,8 +47,7 @@ defmodule BinanceHttp.Http do
     |> do_request()
   end
 
-  defp do_request(%Request{method: method, url: url, body: body, headers: headers} = req) do
-    IO.inspect(req)
+  defp do_request(%Request{method: method, url: url, body: body, headers: headers}) do
     case HTTPoison.request(method, url, body, headers) do
       {:ok, %HTTPoison.Response{status_code: 200} = response} ->
         {:ok, response.body, response.headers}

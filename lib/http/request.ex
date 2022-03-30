@@ -1,8 +1,9 @@
 defmodule BinanceHttp.Http.Request do
-  @changed_fields [:url, :headers, :options, :body]
-  @fields [:method, :url, :headers, :body, :options]
+  # @TODO delete this
+  @changed_fields [:url, :headers, :options]
+  @fields [:method, :url, :headers, :options]
 
-  defstruct [:method, :url, :headers, :body, :options]
+  defstruct [:method, :url, :headers, :options]
 
   def new(params) do
     params = Map.take(params, @fields)

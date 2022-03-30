@@ -1,4 +1,4 @@
-defmodule BinanceHttp.SAPI.V1 do
+defmodule BinanceHttp.Api.SAPI.V1 do
   alias BinanceHttp.Http
 
   @base_path "/sapi/v1"
