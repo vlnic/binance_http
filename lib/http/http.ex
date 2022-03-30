@@ -12,7 +12,7 @@ defmodule BinanceHttp.Http do
 
   def post_json(url, params, headers, opts \\ []) do
     with {:ok, body} <- Jason.encode(params),
-         {:ok, body, _} <- request(:post, url, body, %{headers | "Content-Type": "application/json"}, opts)
+         {:ok, body, _} <- request(:post, url, body, [headers | {"Content-Type", "application/json"}], opts)
     do
       Jason.decode!(body)
     else
