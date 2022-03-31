@@ -1,5 +1,4 @@
 defmodule BinanceHttp.Api.Endpoint do
-  alias BinanceHttp.Http.Query
   alias BinanceHttp.Digest
 
   @secret Application.compile_env(:binance_http, :secret_key)

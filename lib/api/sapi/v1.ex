@@ -1,40 +1,15 @@
 defmodule BinanceHttp.Api.SAPI.V1 do
-  alias BinanceHttp.Http
+  use BinanceHttp.Api
 
-  @base_path "/sapi/v1"
+  request :capital_detail,
+    endpoint: {:get, "/sapi/v1/capital/config/getall"},
+    auth_type: :user_data
 
-  def capital_detail(%{auth: %{api_key: _key, secret_key: _secret} = auth}) do
-    request("/capital/config/getall", %{}, [sign: true, auth: auth])
-  end
-  def capital_detail() do
-    request("/capital/config/getall", %{}, [sign: true])
-  end
+  request :account_snapshot,
+    endpoint: {:get, "/sapi/v1/accountSnapshot"},
+    auth_type: :user_data
 
-  def account_snapshot(%{params: %{type: type} = snapshot_params} = request) when type in ["SPOT", "MARGIN", "FUTURES"] do
-    query_params = Map.take(snapshot_params, [:type, :start_time, :end_time, :limit])
-    case Map.fetch(request, :auth) do
-      {:ok, auth} ->
-        request("/accountSnapshot", query_params, [auth: auth, sign: true])
-
-      _error ->
-        request("/accountSnapshot", query_params, [sign: true])
-    end
-  end
-  def account_snapshot(_), do: {:error, :incorrect_params}
-
-  def system_status() do
-    request("/system/status", %{}, [])
-  end
-
-  defp request(path, query, opts) do
-    with {:ok, url} <- Http.build_url(@base_path, path),
-         {:ok, json} <- Http.get(url, query, [{"Accept", "application/json"}], opts),
-         {:ok, response} <- Jason.decode(json)
-    do
-      response
-    else
-      error ->
-        error
-    end
-  end
+  request :system_status,
+    endpoint: {:get, "/sapi/v1/system/status"},
+    auth_type: :none
 end
