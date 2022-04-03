@@ -3,17 +3,16 @@ defmodule BinanceHttp.Api do
   alias BinanceHttp.Http.Request
   alias BinanceHttp.Http.Client
 
-  defmacro __using__(opts \\ []) do
-    namespace = Keyword.get(opts, :namespace, "")
+  defmacro __using__(_opts \\ []) do
 
     quote do
-      @namespace unquote(namespace)
+      use BinanceHttp.Api.BehaviourDef
 
       import BinanceHttp.Api
     end
   end
 
-  defmacro request(name, opts) do
+  defmacro action(name, opts) do
     {endpoint, opts} = Keyword.pop(opts, :endpoint)
     {params, opts} = Keyword.pop(opts, :params)
     {params_fn, opts} = Keyword.pop(opts, :params_fn)
