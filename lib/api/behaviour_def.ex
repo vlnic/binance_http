@@ -41,7 +41,7 @@ defmodule BinanceHttp.Api.BehaviourDef do
 
   defmacro __using__(_opts \\ []) do
     quote do
-      @after_compile {BinanceHttp.API, :__after_compile__}
+      @after_compile {BinanceHttp.Api, :__after_compile__}
 
       Module.register_attribute __MODULE__, :methods, accumulate: true
 
@@ -53,12 +53,8 @@ defmodule BinanceHttp.Api.BehaviourDef do
     Module.put_attribute(module, :methods, name)
   end
 
-  def apply_mox(module, name, args) do
-    apply(Module.concat(module, Mock), name, args)
-  end
-
   def define_module(env) do
-    module = Module.concat(env.module)
+    module = Module.concat(env.module, Behaviour)
     methods = env.module.__methods__
 
     contents = Enum.map(methods, &define_callbacks/1)
