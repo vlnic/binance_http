@@ -3,7 +3,7 @@ defmodule BinanceHttp.Digest do
 
   def digest(secret_key, params) when is_map(params) do
     time = timestamp()
-    bin_params = glue_params(%{params | timestamp: time})
+    bin_params = glue_params(Map.put(params, :timestamp, time))
 
     signature =
       :sha256
@@ -15,7 +15,7 @@ defmodule BinanceHttp.Digest do
   end
   def digest(_, _), do: {:error, :incorrect_params}
 
-  defp glue_params(%{timestamp: _} = params) when is_map(params) do
+  defp glue_params(params) when is_map(params) do
     params
     |> Map.to_list()
     |> Enum.reduce("", fn({k, v}, result) ->

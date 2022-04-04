@@ -7,3 +7,5 @@ config :binance_http,
   http_client: HTTPoison,
   config: BinanceHttp.Config,
   recv_window: 10000
+
+import_config "#{Mix.env}.exs"

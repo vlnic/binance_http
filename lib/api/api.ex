@@ -54,19 +54,19 @@ defmodule BinanceHttp.Api do
   end
 
   def execute(method, path, params, auth_type, opts) do
-    query = Keyword.pop(opts, :query, %{})
+    query = Keyword.get(opts, :query, %{})
     url = Endpoint.build(path, query, auth_type)
     body = Request.build_body(params, opts)
     headers = Request.build_headers([], auth_type, opts)
 
-    Client.request(method, url, body, headers, [])
-  end
+    case Client.request(method, url, body, headers, []) do
+      {:ok, body, _headers} ->
+        body
 
-#  for method <- [:get, :post, :put, :patch, :delete] do
-#    def unquote(method)(path, params \\ %{}, opts \\ []) do
-#      execute(unquote(method), path, params, opts)
-#    end
-#  end
+      error ->
+        error
+    end
+  end
 
   def __after_compile__(env, _bytecode) do
     BinanceHttp.Api.BehaviourDef.define_module(env)

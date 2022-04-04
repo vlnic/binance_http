@@ -4,7 +4,7 @@ defmodule BinanceHttp.Http.Client do
   """
 
   @callback request(method :: binary, url :: binary, body :: term,
-              headers :: map, opts :: list)
+              headers :: list, opts :: list)
   :: {:ok, status :: non_neg_integer, headers :: list | map, body :: nil | binary}
   | {:error, term}
 

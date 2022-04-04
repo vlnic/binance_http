@@ -7,13 +7,12 @@ defmodule BinanceHttp.Api.Endpoint do
   @sign_auth_types [:trade, :margin, :user_data]
 
   def build(path, query, auth) when auth in @sign_auth_types do
-    url = @base_url <> path
-          |> prepare_query_params(query)
+    query = Map.merge(query, %{recvWindow: 10000})
+    url =
+      @base_url <> path
+      |> prepare_query_params(query)
 
-    {signature, timestamp} = Digest.digest(
-      @secret,
-      Map.merge(query, %{recvWindow: 10000})
-    )
+    {signature, timestamp} = Digest.digest(@secret, query)
 
     if Regex.match?(~r/\?/, url) do
       url <> "&timestamp=#{timestamp}&signature=#{signature}"
@@ -23,7 +22,9 @@ defmodule BinanceHttp.Api.Endpoint do
   end
 
   def build(path, query, _) do
-    prepare_query_params(path, query)
+    url =
+      @base_url <> path
+      |> prepare_query_params(query)
   end
 
   def prepare_query_params(url, params) when is_map(params) and map_size(params) > 0 do

@@ -6,8 +6,8 @@ defmodule BinanceHttp.Http.Request do
   def build_body(params, [content_type: :json]) do
     Jason.encode!(params)
   end
-  def build_body(nil, _), do: ""
-  def build_body(params, _), do: params
+  def build_body(params, _) when is_binary(params), do: params
+  def build_body(_, _), do: ""
 
   def build_headers(headers, auth, opts) when auth in @api_token_auth_types do
     headers = headers ++ [{"X-MBX-APIKEY", @api_token}]
