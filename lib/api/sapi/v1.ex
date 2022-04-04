@@ -12,4 +12,9 @@ defmodule BinanceHttp.Api.SAPI.V1 do
   action :system_status,
     endpoint: {:get, "/sapi/v1/system/status"},
     auth_type: :none
+
+  action :disableFastWithdrawSwitch,
+    endpoint: {:post, "/sapi/v1/account/disableFastWithdrawSwitch"},
+    auth_type: :user_data
+
 end
