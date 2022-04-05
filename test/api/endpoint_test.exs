@@ -1,14 +1,9 @@
-defmodule BinanceHttpTest.Functional.Api.EndpointTest do
+defmodule BinanceHttpTest.Api.EndpointTest do
   use ExUnit.Case
 
   alias BinanceHttp.Api.Endpoint
 
   describe "common" do
-    setup do
-      Application.put_env(:binance_http, :api_key, "111123")
-      Application.put_env(:binance_http, :secret_key, "21214241")
-    end
-
     test "build without signature" do
       path = "/example/path"
 

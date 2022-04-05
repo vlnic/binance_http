@@ -22,9 +22,8 @@ defmodule BinanceHttp.Api.Endpoint do
   end
 
   def build(path, query, _) do
-    url =
-      @base_url <> path
-      |> prepare_query_params(query)
+    @base_url <> path
+    |> prepare_query_params(query)
   end
 
   def prepare_query_params(url, params) when is_map(params) and map_size(params) > 0 do

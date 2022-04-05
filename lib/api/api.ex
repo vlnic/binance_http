@@ -1,7 +1,6 @@
 defmodule BinanceHttp.Api do
   alias BinanceHttp.Api.Endpoint
-  alias BinanceHttp.Http.Request
-  alias BinanceHttp.Http.Client
+  alias BinanceHttp.Http.{Request, Response, Client}
 
   defmacro __using__(_opts \\ []) do
     quote do
@@ -60,8 +59,8 @@ defmodule BinanceHttp.Api do
     headers = Request.build_headers([], auth_type, opts)
 
     case Client.request(method, url, body, headers, []) do
-      {:ok, body, _headers} ->
-        body
+      {:ok, body, headers} ->
+        Response.prepare_response(body, headers)
 
       error ->
         error
