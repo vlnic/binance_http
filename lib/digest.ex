@@ -6,8 +6,8 @@ defmodule BinanceHttp.Digest do
     bin_params = glue_params(Map.put(params, :timestamp, time))
 
     signature =
-      :sha256
-      |> :crypto.hmac(bin_params, secret_key)
+      :hmac
+      |> :crypto.mac(:sha256, secret_key, bin_params)
       |> Base.encode16()
       |> String.downcase()
 
@@ -25,6 +25,6 @@ defmodule BinanceHttp.Digest do
 
   defp timestamp do
     DateTime.utc_now()
-    |> DateTime.to_unix()
+    |> DateTime.to_unix(:millisecond)
   end
 end

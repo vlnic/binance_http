@@ -52,10 +52,13 @@ defmodule BinanceHttp.Api do
   end
 
   def execute(method, path, params, auth_type, opts) do
-    query = Keyword.get(opts, :query, %{})
+    query =
+      Keyword.get(opts, :query, %{})
+      |> maybe_merge_query_params(params, method)
+
     url = Endpoint.build(path, query, auth_type)
     body = Request.build_body(params, opts)
-    headers = Request.build_headers([], auth_type, opts)
+    headers = Request.build_headers([], auth_type)
 
     case Client.request(method, url, body, headers, []) do
       {:ok, body, headers} ->
@@ -94,4 +97,9 @@ defmodule BinanceHttp.Api do
   defp make_module_ast(type) do
     quote do: unquote(type).make(params, make_map: true)
   end
+
+  defp maybe_merge_query_params(query, params, method) when method in [:get] do
+    Map.merge(query, params)
+  end
+  defp maybe_merge_query_params(query, _, _), do: query
 end
