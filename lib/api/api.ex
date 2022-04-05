@@ -60,7 +60,7 @@ defmodule BinanceHttp.Api do
 
     case Client.request(method, url, body, headers, []) do
       {:ok, body, headers} ->
-        Response.prepare_response(body, headers)
+        {:ok, Response.prepare_response(body, headers)}
 
       error ->
         error
