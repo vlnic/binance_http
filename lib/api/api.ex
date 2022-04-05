@@ -14,7 +14,6 @@ defmodule BinanceHttp.Api do
     {endpoint, opts} = Keyword.pop(opts, :endpoint)
     {params, opts} = Keyword.pop(opts, :params)
     {params_fn, opts} = Keyword.pop(opts, :params_fn)
-#    {auth_type, opts} = Keyword.pop(opts, :auth_type, :none)
 
     {method, path} = check_endpoint!(endpoint)
     params_ast_fun = params_ast(params)
