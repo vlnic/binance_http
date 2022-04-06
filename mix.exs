@@ -7,7 +7,8 @@ defmodule BinanceHttp.MixProject do
       version: "0.1.0",
       elixir: "~> 1.12",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      package: package()
     ]
   end
 
@@ -22,7 +23,16 @@ defmodule BinanceHttp.MixProject do
   defp deps do
     [
       {:httpoison, "~> 1.8"},
-      {:jason, "~> 1.2"}
+      {:jason, "~> 1.2"},
+      {:construct, "~> 2.0"}
     ]
+  end
+
+  def package do
+    [name: :binance_http,
+     files: ["lib", "mix.exs"],
+     maintainers: ["Vladimir Pavlov"],
+     licenses: ["MIT"],
+     links: %{}]
   end
 end

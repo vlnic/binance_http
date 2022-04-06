@@ -8,8 +8,7 @@ defmodule BinanceHttp.Digest do
     signature =
       :hmac
       |> :crypto.mac(:sha256, secret_key, bin_params)
-      |> Base.encode16()
-      |> String.downcase()
+      |> Base.encode16(case: :lower)
 
     {signature, time}
   end
@@ -21,6 +20,7 @@ defmodule BinanceHttp.Digest do
     |> Enum.reduce("", fn({k, v}, result) ->
       result <> "&#{k}=#{v}"
     end)
+    |> String.trim("&")
   end
 
   defp timestamp do

@@ -9,3 +9,4 @@ config :binance_http,
   recv_window: 10000
 
 import_config "#{Mix.env}.exs"
+import_config "release.exs"

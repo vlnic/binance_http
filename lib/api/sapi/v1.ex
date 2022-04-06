@@ -3,7 +3,7 @@ defmodule BinanceHttp.Api.SAPI.V1 do
 
   alias BinanceHttp.Types.AccountType
 
-  action :capital_detail,
+  action :capital_getall,
     endpoint: {:get, "/sapi/v1/capital/config/getall"},
     auth_type: :user_data
 
