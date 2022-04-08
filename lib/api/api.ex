@@ -55,9 +55,13 @@ defmodule BinanceHttp.Api do
     query =
       Keyword.get(opts, :query, %{})
       |> maybe_merge_query_params(params, method)
+      |> filter_params()
 
     url = Endpoint.build(path, query, auth_type)
-    body = Request.build_body(params, opts)
+    body =
+      params
+      |> filter_params()
+      |> Request.build_body(opts)
     headers = Request.build_headers([], auth_type)
 
     case Client.request(method, url, body, headers, []) do
@@ -102,4 +106,11 @@ defmodule BinanceHttp.Api do
     Map.merge(query, params)
   end
   defp maybe_merge_query_params(query, _, _), do: query
+
+  defp filter_params(params) when is_struct(params) do
+    Map.from_struct(params) |> filter_params()
+  end
+  defp filter_params(params) do
+    for {_k,v} = p <- params, v != nil, into: %{}, do: p
+  end
 end

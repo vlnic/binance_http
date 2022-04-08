@@ -25,4 +25,15 @@ defmodule BinanceHttp.Api.SAPI.V1 do
     endpoint: {:post, "/sapi/v1/account/disableFastWithdrawSwitch"},
     auth_type: :user_data
 
+  action :deposit_history,
+    endpoint: {:get, "/sapi/v1/capital/deposit/hisrec"},
+    auth_type: :user_data,
+    params: [
+      coin: {:string, default: nil},
+      status: {:integer, default: nil},
+      startTime: {:integer, default: nil},
+      endTime: {:integer, default: nil},
+      offset: {:integer, default: 0},
+      limit: {:integer, default: 1000}
+    ]
 end
