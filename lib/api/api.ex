@@ -53,7 +53,7 @@ defmodule BinanceHttp.Api do
 
   def execute(method, path, params, auth_type, opts) do
     query =
-      Keyword.get(opts, :url_query, %{})
+      Keyword.get(params, :url_query, %{})
       |> maybe_merge_query_params(params, method)
       |> filter_params()
 
