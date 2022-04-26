@@ -105,11 +105,6 @@ defmodule BinanceHttp.Api do
   end
 
   defp maybe_merge_query_params(query, params, method) when method in [:get] do
-    IO.puts """
-      maybe_merge_query_params:
-      query: #{inspect query}
-      params: #{inspect params}
-    """
     merge_params(query, params)
   end
   defp maybe_merge_query_params(query, _, _), do: query
