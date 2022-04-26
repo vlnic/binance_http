@@ -4,21 +4,11 @@
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `binance_http` to your list of dependencies in `mix.exs`:
-
+Installation from GitHub:
 ```elixir
 def deps do
   [
-    {:binance_http, "~> 0.1.0"}
-  ]
-end
-```
-Or installation from GitHub:
-```elixir
-def deps do
-  [
-    {:binance_http, git: "https://github.com/elixir-lang/gettext.git", tag: "0.1"}
+    {:binance_http, git: "https://github.com/vlnic/binance_http.git", tag: "0.1"}
   ]
 end
 ```
