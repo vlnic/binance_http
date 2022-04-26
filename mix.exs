@@ -14,17 +14,20 @@ defmodule BinanceHttp.MixProject do
 
   # Run "mix help compile.app" to learn about applications.
   def application do
-    [
-      extra_applications: [:logger, :crypto]
-    ]
+    [extra_applications: [:logger, :crypto]]
   end
+
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_), do: ["lib"]
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
       {:httpoison, "~> 1.8"},
       {:jason, "~> 1.2"},
-      {:construct, "~> 2.0"}
+      {:construct, "~> 2.0"},
+      {:mox, ">= 0.0.0", only: [:dev, :test]},
+      {:credo, ">= 1.5.1", only: [:dev, :test]}
     ]
   end
 

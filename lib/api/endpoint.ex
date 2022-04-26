@@ -2,12 +2,12 @@ defmodule BinanceHttp.Api.Endpoint do
   alias BinanceHttp.Digest
 
   @secret Application.compile_env(:binance_http, :secret_key)
-  @base_url Application.get_env(:binance_http, :base_url)
+  @base_url base_url()
 
   @sign_auth_types [:trade, :margin, :user_data]
 
   def build(path, query, auth) when auth in @sign_auth_types do
-    query = Map.merge(query, %{recvWindow: 10000})
+    query = Map.merge(query, %{recvWindow: 10_000})
     url =
       @base_url <> path
       |> prepare_query_params(query)
@@ -39,4 +39,8 @@ defmodule BinanceHttp.Api.Endpoint do
   end
 
   def prepare_query_params(url, _), do: url
+
+  defp base_url do
+    Application.get_env(:binance_http, :base_url)
+  end
 end

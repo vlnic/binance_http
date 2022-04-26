@@ -38,8 +38,10 @@ defmodule BinanceHttp.Api do
           params_transformed = unquote(maybe_params_fn)
           unquote(execute_ast.(method, path))
         else
-          :error -> {:error, {:primitive_type_error, params}}
-          {:error, reason} -> {:error, reason}
+          :error ->
+            {:error, {:primitive_type_error, params}}
+          {:error, reason} ->
+            {:error, reason}
         end
       end
     end
@@ -121,6 +123,6 @@ defmodule BinanceHttp.Api do
     Map.from_struct(params) |> filter_params()
   end
   defp filter_params(params) do
-    for {_k,v} = p <- params, v != nil, into: %{}, do: p
+    for {_k, v} = p <- params, v != nil, into: %{}, do: p
   end
 end
