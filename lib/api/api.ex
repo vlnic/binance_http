@@ -53,7 +53,7 @@ defmodule BinanceHttp.Api do
 
   def execute(method, path, params, auth_type, opts) do
     query =
-      Keyword.get(params, :url_query, %{})
+      Keyword.get(opts, :url_query, %{})
       |> maybe_merge_query_params(params, method)
       |> filter_params()
 
@@ -103,9 +103,19 @@ defmodule BinanceHttp.Api do
   end
 
   defp maybe_merge_query_params(query, params, method) when method in [:get] do
-    Map.merge(query, params)
+    IO.puts """
+      maybe_merge_query_params:
+      query: #{inspect query}
+      params: #{inspect params}
+    """
+    merge_params(query, params)
   end
   defp maybe_merge_query_params(query, _, _), do: query
+
+  defp merge_params(query, params) when is_map(params) do
+    Map.merge(query, params)
+  end
+  defp merge_params(query, _), do: query
 
   defp filter_params(params) when is_struct(params) do
     Map.from_struct(params) |> filter_params()
