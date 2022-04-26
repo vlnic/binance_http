@@ -41,7 +41,7 @@ defmodule BinanceHttp.Api.V3.Market do
     endpoint: {:get, "/api/v3/depth"},
     auth_type: :none,
     params: [
-      symbol: {:string},
+      symbol: :string,
       limit: {:integer, default: 100}
     ]
 
@@ -60,7 +60,7 @@ defmodule BinanceHttp.Api.V3.Market do
     endpoint: {:get, "/api/v3/trades"},
     auth_type: :market_data,
     params: [
-      symbol: {:string},
+      symbol: :string,
       limit: {:integer, default: nil}
     ]
 
@@ -80,7 +80,7 @@ defmodule BinanceHttp.Api.V3.Market do
     endpoint: {:get, "/api/v3/historicalTrades"},
     auth_type: :market_data,
     params: [
-      symbol: {:string},
+      symbol: :string,
       limit: {:integer, default: 500},
       fromId: {:integer, default: nil}
     ]
@@ -101,7 +101,7 @@ defmodule BinanceHttp.Api.V3.Market do
     endpoint: {:get, "/api/v3/aggTrades"},
     auth_type: :none,
     params: [
-      symbol: {:string},
+      symbol: :string,
       fromId: {:integer, default: nil},
       startTime: {:date_time, default: nil},
       endTime: {:date_time, default: nil},
