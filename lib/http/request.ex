@@ -1,19 +1,16 @@
 defmodule BinanceHttp.Http.Request do
-  @changed_fields [:url, :headers, :options, :body]
-  @fields [:method, :url, :headers, :body, :options]
 
-  defstruct [:method, :url, :headers, :body, :options]
+  @api_token_auth_types [:trade, :margin, :user_data, :user_stream, :market_data]
+  @api_token Application.compile_env(:binance_http, :api_key)
 
-  def new(params) do
-    params = Map.take(params, @fields)
-    struct(__MODULE__, params)
+  def build_body(params, [content_type: :json]) do
+    Jason.encode!(params)
   end
+  def build_body(params, _) when is_binary(params), do: params
+  def build_body(_, _), do: ""
 
-  def put_change(request, key, value) when key in @changed_fields do
-    request
-    |> Map.from_struct()
-    |> Map.put(key, value)
-    |> new()
+  def build_headers(headers, auth) when auth in @api_token_auth_types do
+    headers ++ [{"X-MBX-APIKEY", @api_token}]
   end
-  def put_change(request, _, _), do: request
+  def build_headers(headers, _auth), do: headers
 end
