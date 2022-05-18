@@ -1,6 +1,6 @@
 # BinanceHttp
 
-Simple http client for binance based on HTTPoison
+Unofficial http client for binance api
 
 ## Installation
 
