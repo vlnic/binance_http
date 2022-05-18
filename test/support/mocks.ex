@@ -1,1 +1,1 @@
-Mox.defmock(BinanceHttp.HttpMock, for: BinanceHttp.Http.Client)
+Mox.defmock(BinanceHttp.Http.ClientMock, for: BinanceHttp.Http.Client)

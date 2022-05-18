@@ -1,6 +1,6 @@
 # BinanceHttp
 
-**TODO: Add description**
+Simple http client for binance based on HTTPoison
 
 ## Installation
 
