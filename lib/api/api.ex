@@ -64,7 +64,7 @@ defmodule BinanceHttp.Api do
       params
       |> filter_params()
       |> Request.build_body(opts)
-    headers = Request.build_headers([], auth_type)
+    headers = Request.build_headers([], auth_type, Keyword.get(:auth_key, opts))
 
     case Client.request(method, url, body, headers, []) do
       {:ok, body, headers} ->
