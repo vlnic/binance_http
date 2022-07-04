@@ -13,19 +13,18 @@ defmodule BinanceHttp.ApiCase do
     end
   end
 
-  def mock_client(status, response, {method, url, body, [] = headers, opts}) do
-    expect(BinanceHttp.Http.ClientMock, :request, fn(recv_method, recv_url, recv_headers, recv_body, recv_opts) ->
+  def mock_client(status, response, {method, _url, body, headers, opts}) do
+    expect(BinanceHttp.Http.ClientMock, :request, fn(recv_method, _recv_url, recv_body, recv_headers, recv_opts) ->
       assert method == recv_method
-      assert url == recv_url
       assert headers == recv_headers
       assert body == recv_body
       assert opts == recv_opts
 
-      {:ok, status, [], response}
+      {:ok, %{status_code: status, body: response, headers: [{"Content-Type", "application/json"}]}}
     end)
   end
 
-  def build_url(path, params, auth_type \\ :none) do
-    BinanceHttp.Api.Endpoint.build(path, params, auth_type)
+  def build_url(path, params, auth_type \\ :none, secret \\ "") do
+    BinanceHttp.Api.Endpoint.build(path, params, auth_type, secret)
   end
 end

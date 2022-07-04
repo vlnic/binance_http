@@ -4,7 +4,7 @@ defmodule BinanceHttpTest.Http.RequestTest do
   alias BinanceHttp.Http.Request
 
   describe "common" do
-    test "build_body" do
+    test "#build_body" do
       assert Request.build_body("test", []) == "test"
       assert Request.build_body(
                %{test: "test"},
@@ -12,13 +12,18 @@ defmodule BinanceHttpTest.Http.RequestTest do
              ) == "{\"test\":\"test\"}"
     end
 
-    test "build_headers" do
-      assert Request.build_headers(
-               [{"Content-Type", "application/json"}],
-               :none
-             ) == [{"Content-Type", "application/json"}]
-      assert Request.build_headers([], :margin)
-        == [{"X-MBX-APIKEY", Application.get_env(:binance_http, :api_key)}]
+    test "build_headers with input api key" do
+      api_key = "ZHdxaWpkdXF3aDIxOTB1ZTIx"
+      assert Request.build_headers([], :margin, api_key)
+        == [{"X-MBX-APIKEY", api_key}]
+    end
+
+    test "#build_headers with env api key" do
+      expected_headers = [
+        {"Content-Type", "application/json"},
+        {"X-MBX-APIKEY", Application.get_env(:binance_http, :api_key)}
+      ]
+      assert Request.build_headers([{"Content-Type", "application/json"}], :margin, nil) == expected_headers
     end
   end
 end

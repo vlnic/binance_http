@@ -59,12 +59,12 @@ defmodule BinanceHttp.Api do
       |> maybe_merge_query_params(params, method)
       |> filter_params()
 
-    url = Endpoint.build(path, query, auth_type, Keyword.get(:auth_secret, opts))
+    url = Endpoint.build(path, query, auth_type, Keyword.get(opts, :auth_secret))
     body =
       params
       |> filter_params()
       |> Request.build_body(opts)
-    headers = Request.build_headers([], auth_type, Keyword.get(:auth_key, opts))
+    headers = Request.build_headers([], auth_type, Keyword.get(opts, :auth_key))
 
     case Client.request(method, url, body, headers, []) do
       {:ok, body, headers} ->

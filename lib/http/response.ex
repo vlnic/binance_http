@@ -26,6 +26,7 @@ defmodule BinanceHttp.Http.Response do
     cond do
       String.contains?(type, "application/json") ->
         prepare_json(body)
+
       true ->
         body
     end
@@ -35,6 +36,7 @@ defmodule BinanceHttp.Http.Response do
     case Jason.decode(content) do
       {:ok, result} ->
         result
+
       {:error, _reason} ->
        content
     end
