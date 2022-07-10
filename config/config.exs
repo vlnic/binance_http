@@ -8,4 +8,6 @@ config :binance_http,
   config: BinanceHttp.Config,
   recv_window: 10000
 
-import_config "#{Mix.env}.exs"
+if Mix.env == :test do
+  import_config "#{Mix.env}.exs"
+end
