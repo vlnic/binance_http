@@ -50,7 +50,7 @@ defmodule BinanceHttpTest.Api.SAPI.V1Test do
 
       mock_client(200, Jason.encode!(response), request)
 
-      {:ok, response} == BinanceHttp.Api.SAPI.V1.account_snapshot(query_params)
+      assert {:ok, response} == BinanceHttp.Api.SAPI.V1.account_snapshot(query_params)
     end
   end
 end
