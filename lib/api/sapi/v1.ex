@@ -4,6 +4,11 @@ defmodule BinanceHttp.Api.SAPI.V1 do
   alias BinanceHttp.Types.AccountType
   alias BinanceHttp.Types.UnixTimestamp
 
+  @doc """
+    ### All Coins' Information
+
+    Get information of coins
+  """
   action :capital_getall,
     endpoint: {:get, "/sapi/v1/capital/config/getall"},
     auth_type: :user_data
@@ -89,6 +94,18 @@ defmodule BinanceHttp.Api.SAPI.V1 do
       limit: {:integer, default: 20}
     ]
 
+  action :sub_account_list,
+    endpoint: {:get, "/sapi/v1/sub-account/list"},
+    auth_type: :user_data,
+    params: [
+      email: {:string, default: nil},
+      isFreeze: {:boolean, default: nil},
+      page: {:integer, default: nil},
+      limit: {:integer, default: nil},
+      recvWindow: {:integer, default: nil},
+      timestamp: {UnixTimestamp, default: nil}
+    ]
+
   action :asset_detail,
     endpoint: {:get, "/sapi/v1/asset/assetDetail"},
     auth_type: :user_data,
@@ -98,5 +115,4 @@ defmodule BinanceHttp.Api.SAPI.V1 do
     endpoint: {:get, " /sapi/v1/asset/tradeFee"},
     auth_type: :user_data,
     params: {:primitive, {:string, default: nil}}
-
 end
